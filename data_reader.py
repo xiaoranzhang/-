@@ -2,6 +2,9 @@
 #author: Shawn Zhang
 #date: 2021-07-22
 
+#这段代码作用是将文件夹中所有.csv文件全部转换为xlsx
+
+
 #导入模块
 import os
 import pandas as pd
