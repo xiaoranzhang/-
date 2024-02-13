@@ -19,12 +19,12 @@ csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
 error_files = []
 
 # 遍历所有的.csv文件
-for csv_file in tqdm(csv_files, desc='Converting .csv to .xlsx'):
+for csv_file in tqdm(csv_files, desc='.csv to .xlsx文件转换中：'):
     try:
         # 读取.csv文件
         df = pd.read_csv(os.path.join(folder_path, csv_file), encoding='gbk')
     except UnicodeDecodeError:
-        print(f"Error decoding file {csv_file}. Skipping...")
+        print(f"文件{csv_file}转换错误. 跳过该文件...")
         error_files.append(csv_file)
         continue
 
@@ -38,7 +38,7 @@ for csv_file in tqdm(csv_files, desc='Converting .csv to .xlsx'):
         # 将DataFrame保存为Excel文件，文件名与.csv文件名一致
         df.to_excel(os.path.join(save_path, file_name + '.xlsx'), index=False)
     except Exception as e:
-        print(f"Error saving file {file_name}.xlsx: {e}")
+        print(f"文件{file_name}.xlsx转换错误: {e}")
         error_files.append(csv_file)
         continue
 # 转换完成后提示“已经完成”
@@ -51,6 +51,8 @@ if error_files:
         print(file)
 else:
     print("所有文件都已成功处理。")
+    #转换完成后如果没有报错，自动关机
+    os.system('shutdown -s -t 0')
 
 
 
