@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #author: Shawn Zhang
 
-#这段代码作用是将文件夹中所有.csv文件全部转换为xlsx
+#这段代码作用是将文件夹及其所有子文件夹中所有.csv文件全部转换为xlsx
 
 #导入模块
 import os
@@ -10,40 +10,46 @@ import pandas as pd
 from tqdm import tqdm
 
 # 指定要读取的文件夹路径
-folder_path = r'C:\Users\Shawn Zhang\Desktop\data\csv\2015\sc'
-
-# 获取文件夹中所有的.csv文件
-csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
+folder_path = r'C:\Users\Shawn Zhang\Desktop\data\2016\dc'
 
 # 创建一个空列表，用于存储出错的文件名
 error_files = []
 
-# 遍历所有的.csv文件
-for csv_file in tqdm(csv_files, desc='.csv to .xlsx文件转换中：'):
-    try:
-        # 读取.csv文件
-        df = pd.read_csv(os.path.join(folder_path, csv_file), encoding='gbk')
-    except UnicodeDecodeError:
-        print(f"文件{csv_file}转换错误. 跳过该文件...")
-        error_files.append(csv_file)
-        continue
+# 使用os.walk()函数遍历文件夹及其所有子文件夹中的文件
+for root, dirs, files in os.walk(folder_path):
+    # 创建一个进度条
+    with tqdm(total=len(files), desc="转换中：") as pbar:
+        # 遍历所有的文件
+        for f in files:
+            # 检查文件是否是.csv文件
+            if f.endswith('.csv'):
+                try:
+                    # 读取.csv文件
+                    df = pd.read_csv(os.path.join(root, f), encoding='gbk')
+                except UnicodeDecodeError:
+                    print(f"Error decoding file {f}. 跳过...")
+                    error_files.append(f)
+                    continue
 
-    # 获取不包括扩展名的文件名
-    file_name = os.path.splitext(csv_file)[0]
+                # 获取不包括扩展名的文件名
+                file_name = os.path.splitext(f)[0]
 
-    # 指定新的保存路径
-    save_path = r'C:\Users\Shawn Zhang\Desktop\data\csv\2015\01\sc'
+                # 指定新的保存路径
+                save_path = r'C:\Users\Shawn Zhang\Desktop\data\excel\dc'
 
-    try:
-        # 将DataFrame保存为Excel文件，文件名与.csv文件名一致
-        df.to_excel(os.path.join(save_path, file_name + '.xlsx'), index=False)
-    except Exception as e:
-        print(f"文件{file_name}.xlsx转换错误: {e}")
-        error_files.append(csv_file)
-        continue
+                try:
+                    # 将DataFrame保存为Excel文件，文件名与.csv文件名一致
+                    df.to_excel(os.path.join(save_path, file_name + '.xlsx'), index=False)
+                except Exception as e:
+                    print(f"Error saving file {file_name}.xlsx: {e}")
+                    error_files.append(f)
+                    continue
+
+                # 更新进度条
+                pbar.update(1)
+
 # 转换完成后提示“已经完成”
 print("转换完成！")
-
 # 打印出所有出错的文件名
 if error_files:
     print("以下文件在处理过程中出现错误：")
