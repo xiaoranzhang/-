@@ -40,6 +40,8 @@ for root, dirs, files in os.walk(folder_path):
                 try:
                     # 将DataFrame保存为Excel文件，文件名与.csv文件名一致
                     df.to_excel(os.path.join(save_path, file_name + '.xlsx'), index=False)
+                    #打印已经完成的文件名
+                    print (f"{file_name}已经完成")
                 except Exception as e:
                     print(f"Error saving file {file_name}.xlsx: {e}")
                     error_files.append(f)
