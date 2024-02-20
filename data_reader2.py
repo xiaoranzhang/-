@@ -28,7 +28,7 @@ def main():
 
     #使用多进程处理文件
     with Pool() as p:
-        results = list(tqdm(p.imap(process_file, csv_files), total=len(csv_files)))
+        results = list(tqdm(p.imap(process_file, csv_files), total=len(csv_files), desc="转换中"))
     #将嵌套列表展开
     error_files = [item for sublist in results for item in sublist]
 
