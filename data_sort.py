@@ -9,7 +9,7 @@ import pandas as pd
 root_folder_path = r'C:\Users\Shawn Zhang\Desktop\data\excel\dc2015 2016 2017'
 
 # 遍历根目录下的所有子目录
-for folder_name in tqdm(os.listdir(root_folder_path)):
+for folder_name in tqdm(os.listdir(root_folder_path), desc="数据处理中"):
     folder_path = os.path.join(root_folder_path, folder_name)
 
     # 检查是否为目录
